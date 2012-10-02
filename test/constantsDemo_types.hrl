@@ -6,12 +6,12 @@
 
 %% struct thing
 
--record(thing, {hello = undefined :: integer(), 
-                goodbye = undefined :: integer()}).
+-record(thing, {hello :: integer(),
+                goodbye :: integer()}).
 
 %% struct blah
 
--record(blah, {bing = undefined :: integer()}).
+-record(blah, {bing :: integer()}).
 
 %% struct gak
 

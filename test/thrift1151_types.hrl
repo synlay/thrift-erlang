@@ -3,14 +3,14 @@
 
 %% struct structA
 
--record(structA, {x = undefined :: integer()}).
+-record(structA, {x :: integer()}).
 
 %% struct structB
 
--record(structB, {x = undefined :: integer()}).
+-record(structB, {x :: integer()}).
 
 %% struct structC
 
--record(structC, {x = #structA{} :: #structA{}}).
+-record(structC, {x :: #structA{}}).
 
 -endif.

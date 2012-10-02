@@ -5,7 +5,5 @@
 %%
 
 
--include("thriftTest_types.hrl").
-
--define(thriftTest_MyNumberz, 1).
+-include("manyOptionals_types.hrl").
 

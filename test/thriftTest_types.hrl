@@ -10,55 +10,55 @@
 
 %% struct bonk
 
--record(bonk, {message = undefined :: string(), 
-               type = undefined :: integer()}).
+-record(bonk, {message :: string() | binary(),
+               type :: integer()}).
 
 %% struct bools
 
--record(bools, {im_true = undefined :: boolean(), 
-                im_false = undefined :: boolean()}).
+-record(bools, {im_true :: boolean(),
+                im_false :: boolean()}).
 
 %% struct xtruct
 
--record(xtruct, {string_thing = undefined :: string(), 
-                 byte_thing = undefined :: integer(), 
-                 i32_thing = undefined :: integer(), 
-                 i64_thing = undefined :: integer()}).
+-record(xtruct, {string_thing :: string() | binary(),
+                 byte_thing :: integer(),
+                 i32_thing :: integer(),
+                 i64_thing :: integer()}).
 
 %% struct xtruct2
 
--record(xtruct2, {byte_thing = undefined :: integer(), 
-                  struct_thing = #xtruct{} :: #xtruct{}, 
-                  i32_thing = undefined :: integer()}).
+-record(xtruct2, {byte_thing :: integer(),
+                  struct_thing :: #xtruct{},
+                  i32_thing :: integer()}).
 
 %% struct xtruct3
 
--record(xtruct3, {string_thing = undefined :: string(), 
-                  changed = undefined :: integer(), 
-                  i32_thing = undefined :: integer(), 
-                  i64_thing = undefined :: integer()}).
+-record(xtruct3, {string_thing :: string() | binary(),
+                  changed :: integer(),
+                  i32_thing :: integer(),
+                  i64_thing :: integer()}).
 
 %% struct insanity
 
--record(insanity, {userMap = dict:new() :: dict(), 
-                   xtructs = [] :: list()}).
+-record(insanity, {userMap :: dict(),
+                   xtructs :: list()}).
 
 %% struct crazyNesting
 
--record(crazyNesting, {string_field = undefined :: string(), 
-                       set_field = sets:new() :: set(), 
-                       list_field = [] :: list(), 
-                       binary_field = undefined :: string()}).
+-record(crazyNesting, {string_field :: string() | binary(),
+                       set_field :: set(),
+                       list_field = [] :: list(),
+                       binary_field :: string() | binary()}).
 
 %% struct xception
 
--record(xception, {errorCode = undefined :: integer(), 
-                   message = undefined :: string()}).
+-record(xception, {errorCode :: integer(),
+                   message :: string() | binary()}).
 
 %% struct xception2
 
--record(xception2, {errorCode = undefined :: integer(), 
-                    struct_thing = #xtruct{} :: #xtruct{}}).
+-record(xception2, {errorCode :: integer(),
+                    struct_thing :: #xtruct{}}).
 
 %% struct emptyStruct
 
@@ -66,81 +66,90 @@
 
 %% struct oneField
 
--record(oneField, {field = #emptyStruct{} :: #emptyStruct{}}).
+-record(oneField, {field :: #emptyStruct{}}).
 
 %% struct versioningTestV1
 
--record(versioningTestV1, {begin_in_both = undefined :: integer(), 
-                           old_string = undefined :: string(), 
-                           end_in_both = undefined :: integer()}).
+-record(versioningTestV1, {begin_in_both :: integer(),
+                           old_string :: string() | binary(),
+                           end_in_both :: integer()}).
 
 %% struct versioningTestV2
 
--record(versioningTestV2, {begin_in_both = undefined :: integer(), 
-                           newint = undefined :: integer(), 
-                           newbyte = undefined :: integer(), 
-                           newshort = undefined :: integer(), 
-                           newlong = undefined :: integer(), 
-                           newdouble = undefined :: float(), 
-                           newstruct = #bonk{} :: #bonk{}, 
-                           newlist = [] :: list(), 
-                           newset = sets:new() :: set(), 
-                           newmap = dict:new() :: dict(), 
-                           newstring = undefined :: string(), 
-                           end_in_both = undefined :: integer()}).
+-record(versioningTestV2, {begin_in_both :: integer(),
+                           newint :: integer(),
+                           newbyte :: integer(),
+                           newshort :: integer(),
+                           newlong :: integer(),
+                           newdouble :: float(),
+                           newstruct :: #bonk{},
+                           newlist :: list(),
+                           newset :: set(),
+                           newmap :: dict(),
+                           newstring :: string() | binary(),
+                           end_in_both :: integer()}).
 
 %% struct listTypeVersioningV1
 
--record(listTypeVersioningV1, {myints = [] :: list(), 
-                               hello = undefined :: string()}).
+-record(listTypeVersioningV1, {myints :: list(),
+                               hello :: string() | binary()}).
 
 %% struct listTypeVersioningV2
 
--record(listTypeVersioningV2, {strings = [] :: list(), 
-                               hello = undefined :: string()}).
+-record(listTypeVersioningV2, {strings :: list(),
+                               hello :: string() | binary()}).
 
 %% struct guessProtocolStruct
 
--record(guessProtocolStruct, {map_field = dict:new() :: dict()}).
+-record(guessProtocolStruct, {map_field :: dict()}).
 
 %% struct largeDeltas
 
--record(largeDeltas, {b1 = #bools{} :: #bools{}, 
-                      b10 = #bools{} :: #bools{}, 
-                      b100 = #bools{} :: #bools{}, 
-                      check_true = undefined :: boolean(), 
-                      b1000 = #bools{} :: #bools{}, 
-                      check_false = undefined :: boolean(), 
-                      vertwo2000 = #versioningTestV2{} :: #versioningTestV2{}, 
-                      a_set2500 = sets:new() :: set(), 
-                      vertwo3000 = #versioningTestV2{} :: #versioningTestV2{}, 
-                      big_numbers = [] :: list()}).
+-record(largeDeltas, {b1 :: #bools{},
+                      b10 :: #bools{},
+                      b100 :: #bools{},
+                      check_true :: boolean(),
+                      b1000 :: #bools{},
+                      check_false :: boolean(),
+                      vertwo2000 :: #versioningTestV2{},
+                      a_set2500 :: set(),
+                      vertwo3000 :: #versioningTestV2{},
+                      big_numbers :: list()}).
 
 %% struct nestedListsI32x2
 
--record(nestedListsI32x2, {integerlist = [] :: list()}).
+-record(nestedListsI32x2, {integerlist :: list()}).
 
 %% struct nestedListsI32x3
 
--record(nestedListsI32x3, {integerlist = [] :: list()}).
+-record(nestedListsI32x3, {integerlist :: list()}).
 
 %% struct nestedMixedx2
 
--record(nestedMixedx2, {int_set_list = [] :: list(), 
-                        map_int_strset = dict:new() :: dict(), 
-                        map_int_strset_list = [] :: list()}).
+-record(nestedMixedx2, {int_set_list :: list(),
+                        map_int_strset :: dict(),
+                        map_int_strset_list :: list()}).
 
 %% struct listBonks
 
--record(listBonks, {bonk = [] :: list()}).
+-record(listBonks, {bonk :: list()}).
 
 %% struct nestedListsBonk
 
--record(nestedListsBonk, {bonk = [] :: list()}).
+-record(nestedListsBonk, {bonk :: list()}).
 
 %% struct boolTest
 
--record(boolTest, {b = true :: boolean(), 
-                   s = "true" :: string()}).
+-record(boolTest, {b = true :: boolean(),
+                   s = "true" :: string() | binary()}).
+
+%% struct structA
+
+-record(structA, {s :: string() | binary()}).
+
+%% struct structB
+
+-record(structB, {aa :: #structA{},
+                  ab = #structA{} :: #structA{}}).
 
 -endif.

@@ -4,23 +4,23 @@
 %% DO NOT EDIT UNLESS YOU ARE SURE THAT YOU KNOW WHAT YOU ARE DOING
 %%
 
--module(secondService_thrift).
+-module(foo_service_thrift).
 -behaviour(thrift_service).
 
 
--include("secondService_thrift.hrl").
+-include("foo_service_thrift.hrl").
 
 -export([struct_info/1, function_info/2]).
 
 struct_info('i am a dummy struct') -> undefined.
 %%% interface
-% blahBlah(This)
-function_info('blahBlah', params_type) ->
+% foo(This)
+function_info('foo', params_type) ->
   {struct, []}
 ;
-function_info('blahBlah', reply_type) ->
+function_info('foo', reply_type) ->
   {struct, []};
-function_info('blahBlah', exceptions) ->
+function_info('foo', exceptions) ->
   {struct, []}
 ;
 function_info(_Func, _Info) -> no_function.
