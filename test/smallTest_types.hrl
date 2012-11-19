@@ -11,16 +11,16 @@
 
 %% struct hello
 
--record(hello, {simple = 53 :: integer(), 
-                complex = dict:from_list([{23,532},{6243,632},{2355,532}]) :: dict(), 
-                complexer = dict:new() :: dict(), 
-                words = "words" :: string(), 
+-record(hello, {simple = 53 :: integer(),
+                complex = dict:from_list([{23,532},{6243,632},{2355,532}]) :: dict(),
+                complexer :: dict(),
+                words = "words" :: string() | binary(),
                 thinz = #goodbyez{val = 36632} :: #goodbyez{}}).
 
 %% struct goodbye
 
--record(goodbye, {simple = undefined :: integer(), 
-                  complex = dict:new() :: dict(), 
-                  complexer = dict:new() :: dict()}).
+-record(goodbye, {simple :: integer(),
+                  complex :: dict(),
+                  complexer :: dict()}).
 
 -endif.

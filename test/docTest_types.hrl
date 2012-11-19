@@ -10,31 +10,31 @@
 
 %% struct xtruct
 
--record(xtruct, {string_thing = undefined :: string(), 
-                 byte_thing = undefined :: integer(), 
-                 i32_thing = undefined :: integer(), 
-                 i64_thing = undefined :: integer()}).
+-record(xtruct, {string_thing :: string() | binary(),
+                 byte_thing :: integer(),
+                 i32_thing :: integer(),
+                 i64_thing :: integer()}).
 
 %% struct xtruct2
 
--record(xtruct2, {byte_thing = undefined :: integer(), 
-                  struct_thing = #xtruct{} :: #xtruct{}, 
-                  i32_thing = undefined :: integer()}).
+-record(xtruct2, {byte_thing :: integer(),
+                  struct_thing :: #xtruct{},
+                  i32_thing :: integer()}).
 
 %% struct insanity
 
--record(insanity, {userMap = dict:new() :: dict(), 
-                   xtructs = [] :: list()}).
+-record(insanity, {userMap :: dict(),
+                   xtructs :: list()}).
 
 %% struct xception
 
--record(xception, {errorCode = undefined :: integer(), 
-                   message = undefined :: string()}).
+-record(xception, {errorCode :: integer(),
+                   message :: string() | binary()}).
 
 %% struct xception2
 
--record(xception2, {errorCode = undefined :: integer(), 
-                    struct_thing = #xtruct{} :: #xtruct{}}).
+-record(xception2, {errorCode :: integer(),
+                    struct_thing :: #xtruct{}}).
 
 %% struct emptyStruct
 
@@ -42,6 +42,6 @@
 
 %% struct oneField
 
--record(oneField, {field = #emptyStruct{} :: #emptyStruct{}}).
+-record(oneField, {field :: #emptyStruct{}}).
 
 -endif.

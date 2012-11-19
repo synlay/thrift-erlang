@@ -5,5 +5,5 @@
 %%
 
 
--include("annotationTest_types.hrl").
+-include("thrift1475_types.hrl").
 

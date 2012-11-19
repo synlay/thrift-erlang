@@ -6,52 +6,52 @@
 
 %% struct doubles
 
--record(doubles, {nan = undefined :: float(), 
-                  inf = undefined :: float(), 
-                  neginf = undefined :: float(), 
-                  repeating = undefined :: float(), 
-                  big = undefined :: float(), 
-                  small = undefined :: float(), 
-                  zero = undefined :: float(), 
-                  negzero = undefined :: float()}).
+-record(doubles, {nan :: float(),
+                  inf :: float(),
+                  neginf :: float(),
+                  repeating :: float(),
+                  big :: float(),
+                  small :: float(),
+                  zero :: float(),
+                  negzero :: float()}).
 
 %% struct oneOfEach
 
--record(oneOfEach, {im_true = undefined :: boolean(), 
-                    im_false = undefined :: boolean(), 
-                    a_bite = 127 :: integer(), 
-                    integer16 = 32767 :: integer(), 
-                    integer32 = undefined :: integer(), 
-                    integer64 = 10000000000 :: integer(), 
-                    double_precision = undefined :: float(), 
-                    some_characters = undefined :: string(), 
-                    zomg_unicode = undefined :: string(), 
-                    what_who = undefined :: boolean(), 
-                    base64 = undefined :: string(), 
-                    byte_list = [1,2,3] :: list(), 
-                    i16_list = [1,2,3] :: list(), 
+-record(oneOfEach, {im_true :: boolean(),
+                    im_false :: boolean(),
+                    a_bite = 127 :: integer(),
+                    integer16 = 32767 :: integer(),
+                    integer32 :: integer(),
+                    integer64 = 10000000000 :: integer(),
+                    double_precision :: float(),
+                    some_characters :: string() | binary(),
+                    zomg_unicode :: string() | binary(),
+                    what_who :: boolean(),
+                    base64 :: string() | binary(),
+                    byte_list = [1,2,3] :: list(),
+                    i16_list = [1,2,3] :: list(),
                     i64_list = [1,2,3] :: list()}).
 
 %% struct bonk
 
--record(bonk, {type = undefined :: integer(), 
-               message = undefined :: string()}).
+-record(bonk, {type :: integer(),
+               message :: string() | binary()}).
 
 %% struct nesting
 
--record(nesting, {my_bonk = #bonk{} :: #bonk{}, 
-                  my_ooe = #oneOfEach{} :: #oneOfEach{}}).
+-record(nesting, {my_bonk :: #bonk{},
+                  my_ooe :: #oneOfEach{}}).
 
 %% struct holyMoley
 
--record(holyMoley, {big = [] :: list(), 
-                    contain = sets:new() :: set(), 
-                    bonks = dict:new() :: dict()}).
+-record(holyMoley, {big :: list(),
+                    contain :: set(),
+                    bonks :: dict()}).
 
 %% struct backwards
 
--record(backwards, {first_tag2 = undefined :: integer(), 
-                    second_tag1 = undefined :: integer()}).
+-record(backwards, {first_tag2 :: integer(),
+                    second_tag1 :: integer()}).
 
 %% struct empty
 
@@ -59,80 +59,80 @@
 
 %% struct wrapper
 
--record(wrapper, {foo = #empty{} :: #empty{}}).
+-record(wrapper, {foo :: #empty{}}).
 
 %% struct randomStuff
 
--record(randomStuff, {a = undefined :: integer(), 
-                      b = undefined :: integer(), 
-                      c = undefined :: integer(), 
-                      d = undefined :: integer(), 
-                      myintlist = [] :: list(), 
-                      maps = dict:new() :: dict(), 
-                      bigint = undefined :: integer(), 
-                      triple = undefined :: float()}).
+-record(randomStuff, {a :: integer(),
+                      b :: integer(),
+                      c :: integer(),
+                      d :: integer(),
+                      myintlist :: list(),
+                      maps :: dict(),
+                      bigint :: integer(),
+                      triple :: float()}).
 
 %% struct base64
 
--record(base64, {a = undefined :: integer(), 
-                 b1 = undefined :: string(), 
-                 b2 = undefined :: string(), 
-                 b3 = undefined :: string(), 
-                 b4 = undefined :: string(), 
-                 b5 = undefined :: string(), 
-                 b6 = undefined :: string()}).
+-record(base64, {a :: integer(),
+                 b1 :: string() | binary(),
+                 b2 :: string() | binary(),
+                 b3 :: string() | binary(),
+                 b4 :: string() | binary(),
+                 b5 :: string() | binary(),
+                 b6 :: string() | binary()}).
 
 %% struct compactProtoTestStruct
 
--record(compactProtoTestStruct, {a_byte = undefined :: integer(), 
-                                 a_i16 = undefined :: integer(), 
-                                 a_i32 = undefined :: integer(), 
-                                 a_i64 = undefined :: integer(), 
-                                 a_double = undefined :: float(), 
-                                 a_string = undefined :: string(), 
-                                 a_binary = undefined :: string(), 
-                                 true_field = undefined :: boolean(), 
-                                 false_field = undefined :: boolean(), 
-                                 empty_struct_field = #empty{} :: #empty{}, 
-                                 byte_list = [] :: list(), 
-                                 i16_list = [] :: list(), 
-                                 i32_list = [] :: list(), 
-                                 i64_list = [] :: list(), 
-                                 double_list = [] :: list(), 
-                                 string_list = [] :: list(), 
-                                 binary_list = [] :: list(), 
-                                 boolean_list = [] :: list(), 
-                                 struct_list = [] :: list(), 
-                                 byte_set = sets:new() :: set(), 
-                                 i16_set = sets:new() :: set(), 
-                                 i32_set = sets:new() :: set(), 
-                                 i64_set = sets:new() :: set(), 
-                                 double_set = sets:new() :: set(), 
-                                 string_set = sets:new() :: set(), 
-                                 binary_set = sets:new() :: set(), 
-                                 boolean_set = sets:new() :: set(), 
-                                 struct_set = sets:new() :: set(), 
-                                 byte_byte_map = dict:new() :: dict(), 
-                                 i16_byte_map = dict:new() :: dict(), 
-                                 i32_byte_map = dict:new() :: dict(), 
-                                 i64_byte_map = dict:new() :: dict(), 
-                                 double_byte_map = dict:new() :: dict(), 
-                                 string_byte_map = dict:new() :: dict(), 
-                                 binary_byte_map = dict:new() :: dict(), 
-                                 boolean_byte_map = dict:new() :: dict(), 
-                                 byte_i16_map = dict:new() :: dict(), 
-                                 byte_i32_map = dict:new() :: dict(), 
-                                 byte_i64_map = dict:new() :: dict(), 
-                                 byte_double_map = dict:new() :: dict(), 
-                                 byte_string_map = dict:new() :: dict(), 
-                                 byte_binary_map = dict:new() :: dict(), 
-                                 byte_boolean_map = dict:new() :: dict(), 
-                                 list_byte_map = dict:new() :: dict(), 
-                                 set_byte_map = dict:new() :: dict(), 
-                                 map_byte_map = dict:new() :: dict(), 
-                                 byte_map_map = dict:new() :: dict(), 
-                                 byte_set_map = dict:new() :: dict(), 
-                                 byte_list_map = dict:new() :: dict()}).
+-record(compactProtoTestStruct, {a_byte :: integer(),
+                                 a_i16 :: integer(),
+                                 a_i32 :: integer(),
+                                 a_i64 :: integer(),
+                                 a_double :: float(),
+                                 a_string :: string() | binary(),
+                                 a_binary :: string() | binary(),
+                                 true_field :: boolean(),
+                                 false_field :: boolean(),
+                                 empty_struct_field :: #empty{},
+                                 byte_list :: list(),
+                                 i16_list :: list(),
+                                 i32_list :: list(),
+                                 i64_list :: list(),
+                                 double_list :: list(),
+                                 string_list :: list(),
+                                 binary_list :: list(),
+                                 boolean_list :: list(),
+                                 struct_list :: list(),
+                                 byte_set :: set(),
+                                 i16_set :: set(),
+                                 i32_set :: set(),
+                                 i64_set :: set(),
+                                 double_set :: set(),
+                                 string_set :: set(),
+                                 binary_set :: set(),
+                                 boolean_set :: set(),
+                                 struct_set :: set(),
+                                 byte_byte_map :: dict(),
+                                 i16_byte_map :: dict(),
+                                 i32_byte_map :: dict(),
+                                 i64_byte_map :: dict(),
+                                 double_byte_map :: dict(),
+                                 string_byte_map :: dict(),
+                                 binary_byte_map :: dict(),
+                                 boolean_byte_map :: dict(),
+                                 byte_i16_map :: dict(),
+                                 byte_i32_map :: dict(),
+                                 byte_i64_map :: dict(),
+                                 byte_double_map :: dict(),
+                                 byte_string_map :: dict(),
+                                 byte_binary_map :: dict(),
+                                 byte_boolean_map :: dict(),
+                                 list_byte_map :: dict(),
+                                 set_byte_map :: dict(),
+                                 map_byte_map :: dict(),
+                                 byte_map_map :: dict(),
+                                 byte_set_map :: dict(),
+                                 byte_list_map :: dict()}).
 
 %% struct singleMapTestStruct
 
@@ -140,91 +140,91 @@
 
 %% struct exceptionWithAMap
 
--record(exceptionWithAMap, {blah = undefined :: string(), 
-                            map_field = dict:new() :: dict()}).
+-record(exceptionWithAMap, {blah :: string() | binary(),
+                            map_field :: dict()}).
 
 %% struct blowUp
 
--record(blowUp, {b1 = dict:new() :: dict(), 
-                 b2 = dict:new() :: dict(), 
-                 b3 = dict:new() :: dict(), 
-                 b4 = dict:new() :: dict()}).
+-record(blowUp, {b1 :: dict(),
+                 b2 :: dict(),
+                 b3 :: dict(),
+                 b4 :: dict()}).
 
 %% struct reverseOrderStruct
 
--record(reverseOrderStruct, {first = undefined :: string(), 
-                             second = undefined :: integer(), 
-                             third = undefined :: integer(), 
-                             fourth = undefined :: integer()}).
+-record(reverseOrderStruct, {first :: string() | binary(),
+                             second :: integer(),
+                             third :: integer(),
+                             fourth :: integer()}).
 
 %% struct structWithSomeEnum
 
--record(structWithSomeEnum, {blah = undefined :: integer()}).
+-record(structWithSomeEnum, {blah :: integer()}).
 
 %% struct testUnion
 
--record(testUnion, {string_field = undefined :: string(), 
-                    i32_field = undefined :: integer(), 
-                    struct_field = #oneOfEach{} :: #oneOfEach{}, 
-                    struct_list = [] :: list(), 
-                    other_i32_field = undefined :: integer(), 
-                    enum_field = undefined :: integer(), 
-                    i32_set = sets:new() :: set(), 
-                    i32_map = dict:new() :: dict()}).
+-record(testUnion, {string_field :: string() | binary(),
+                    i32_field :: integer(),
+                    struct_field :: #oneOfEach{},
+                    struct_list :: list(),
+                    other_i32_field :: integer(),
+                    enum_field :: integer(),
+                    i32_set :: set(),
+                    i32_map :: dict()}).
 
 %% struct testUnionMinusStringField
 
--record(testUnionMinusStringField, {i32_field = undefined :: integer(), 
-                                    struct_field = #oneOfEach{} :: #oneOfEach{}, 
-                                    struct_list = [] :: list(), 
-                                    other_i32_field = undefined :: integer(), 
-                                    enum_field = undefined :: integer(), 
-                                    i32_set = sets:new() :: set(), 
-                                    i32_map = dict:new() :: dict()}).
+-record(testUnionMinusStringField, {i32_field :: integer(),
+                                    struct_field :: #oneOfEach{},
+                                    struct_list :: list(),
+                                    other_i32_field :: integer(),
+                                    enum_field :: integer(),
+                                    i32_set :: set(),
+                                    i32_map :: dict()}).
 
 %% struct comparableUnion
 
--record(comparableUnion, {string_field = undefined :: string(), 
-                          binary_field = undefined :: string()}).
+-record(comparableUnion, {string_field :: string() | binary(),
+                          binary_field :: string() | binary()}).
 
 %% struct structWithAUnion
 
--record(structWithAUnion, {test_union = #testUnion{} :: #testUnion{}}).
+-record(structWithAUnion, {test_union :: #testUnion{}}).
 
 %% struct primitiveThenStruct
 
--record(primitiveThenStruct, {blah = undefined :: integer(), 
-                              blah2 = undefined :: integer(), 
-                              bw = #backwards{} :: #backwards{}}).
+-record(primitiveThenStruct, {blah :: integer(),
+                              blah2 :: integer(),
+                              bw :: #backwards{}}).
 
 %% struct structWithASomemap
 
--record(structWithASomemap, {somemap_field = undefined :: dict()}).
+-record(structWithASomemap, {somemap_field :: dict()}).
 
 %% struct bigFieldIdStruct
 
--record(bigFieldIdStruct, {field1 = undefined :: string(), 
-                           field2 = undefined :: string()}).
+-record(bigFieldIdStruct, {field1 :: string() | binary(),
+                           field2 :: string() | binary()}).
 
 %% struct breaksRubyCompactProtocol
 
--record(breaksRubyCompactProtocol, {field1 = undefined :: string(), 
-                                    field2 = #bigFieldIdStruct{} :: #bigFieldIdStruct{}, 
-                                    field3 = undefined :: integer()}).
+-record(breaksRubyCompactProtocol, {field1 :: string() | binary(),
+                                    field2 :: #bigFieldIdStruct{},
+                                    field3 :: integer()}).
 
 %% struct tupleProtocolTestStruct
 
--record(tupleProtocolTestStruct, {field1 = undefined :: integer(), 
-                                  field2 = undefined :: integer(), 
-                                  field3 = undefined :: integer(), 
-                                  field4 = undefined :: integer(), 
-                                  field5 = undefined :: integer(), 
-                                  field6 = undefined :: integer(), 
-                                  field7 = undefined :: integer(), 
-                                  field8 = undefined :: integer(), 
-                                  field9 = undefined :: integer(), 
-                                  field10 = undefined :: integer(), 
-                                  field11 = undefined :: integer(), 
-                                  field12 = undefined :: integer()}).
+-record(tupleProtocolTestStruct, {field1 :: integer(),
+                                  field2 :: integer(),
+                                  field3 :: integer(),
+                                  field4 :: integer(),
+                                  field5 :: integer(),
+                                  field6 :: integer(),
+                                  field7 :: integer(),
+                                  field8 :: integer(),
+                                  field9 :: integer(),
+                                  field10 :: integer(),
+                                  field11 :: integer(),
+                                  field12 :: integer()}).
 
 -endif.

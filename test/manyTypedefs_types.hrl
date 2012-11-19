@@ -3,12 +3,12 @@
 
 %% struct struct1
 
--record(struct1, {myint = undefined :: integer(), 
-                  mylist = undefined :: list()}).
+-record(struct1, {myint :: integer(),
+                  mylist :: list()}).
 
 %% struct exception1
 
--record(exception1, {alist = undefined :: list(), 
-                     mystruct = #struct1{} :: #struct1{}}).
+-record(exception1, {alist :: list(),
+                     mystruct :: #struct1{}}).
 
 -endif.
