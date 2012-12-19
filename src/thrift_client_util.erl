@@ -21,6 +21,7 @@
 
 -export([new/4]).
 -export([new_ssl/4]).
+-export([new_multiplexed/3, new_multiplexed/4]).
 
 %%
 %% Splits client options into client, protocol, and transport options
@@ -71,3 +72,33 @@ new(Host, Port, Service, Options)
 new_ssl(Host, Port, Service, Options)
   when is_integer(Port), is_atom(Service), is_list(Options) ->
     new_wrapper(Host, Port, Service, Options, thrift_sslsocket_transport).
+
+-spec new_multiplexed(Host, Port, Services, Options) -> {ok, ServiceThriftClientList} when
+	Host 		:: list(),
+	Port 		:: integer(),
+	Services    :: list(),
+	Options 	:: list(),
+	ServiceThriftClientList :: [{ServiceName :: list(), ThriftClient :: term()}].
+new_multiplexed(Host, Port, Services, Options) when is_integer(Port),
+													is_list(Services),
+													is_list(Options) ->
+    new_multiplexed(thrift_socket_transport:new_transport_factory(Host, Port, Options), Services, Options).
+
+-spec new_multiplexed(TransportFactoryTuple, Services, Options) -> {ok, ServiceThriftClientList} when
+	TransportFactoryTuple :: {ok, TransportFactory :: term()},
+	Services    		  :: list(),
+	Options 			  :: list(),
+	ServiceThriftClientList :: [{ServiceName :: list(), ThriftClient :: term()}].
+new_multiplexed(TransportFactoryTuple, Services, Options) when is_list(Services),
+															   is_list(Options),
+													  		   is_tuple(TransportFactoryTuple) ->
+    {ProtoOpts, _} = split_options(Options),
+
+    {ok, TransportFactory} = TransportFactoryTuple,
+	
+    {ok, ProtocolFactory} = thrift_binary_protocol:new_protocol_factory(
+                              TransportFactory, ProtoOpts),
+
+    {ok, Protocol} = ProtocolFactory(),
+
+	{ok, [{ServiceName, thrift_client:new(element(2, thrift_multiplexed_protocol:new(Protocol, ServiceName)), Service)} || {ServiceName, Service} <- Services]}.

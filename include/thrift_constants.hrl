@@ -54,3 +54,5 @@
 -define(TApplicationException_INTERNAL_ERROR, 6).
 -define(TApplicationException_PROTOCOL_ERROR, 7).
 
+-define (MULTIPLEXED_SERVICE_SEPARATOR, ":").
+-define (MULTIPLEXED_ERROR_HANDLER_KEY, "error_handler").
