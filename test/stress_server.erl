@@ -22,7 +22,7 @@
 
 -export([start_link/1,
 
-         handle_function/2,
+         handle_function/4,
 
          echoVoid/0,
          echoByte/1,
@@ -38,7 +38,7 @@ start_link(Port) ->
     thrift_server:start_link(Port, service_thrift, ?MODULE).
 
 
-handle_function(Function, Args) ->
+handle_function(_ServiceName, Function, Args, _AppCtx) ->
     case apply(?MODULE, Function, tuple_to_list(Args)) of
         ok ->
              ok;

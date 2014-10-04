@@ -3,8 +3,8 @@
 -include_lib("eunit/include/eunit.hrl").
 
 -export([
-     handle_function/2
-    ,handle_error/2
+     handle_function/4
+    ,handle_error/4
 ]).
 
 start_multiplexed_server_test() ->
@@ -24,7 +24,8 @@ start_multiplexed_server_test() ->
             {"error_handler",              ?MODULE},
             {"Multiplexing_Calculator",    ?MODULE},
             {"Multiplexing_WeatherReport", ?MODULE}
-        ]}
+        ]},
+        {app_ctx, some_data}
      ]),
 
     {ok, [{"Multiplexing_Calculator", CalculatorClient0},
@@ -45,13 +46,13 @@ start_multiplexed_server_test() ->
 %% HANDLE FUNCTIONS
 
 %% Calculator handles
-handle_function(add, {X, Y}) ->
+handle_function(_ServiceName, add, {X, Y}, some_data) ->
     {reply, X + Y};
 
 %% WeatherReport handles
-handle_function(getTemperature, {}) ->
+handle_function(_ServiceName, getTemperature, {}, some_data) ->
     {reply, 42.0}.
 
-handle_error(_F, _Reason) ->
+handle_error(_ServiceName, _F, _Reason, _AppCtx) ->
 %%     ?debugHere, ?debugVal({_F, _Reason}),
     ok.

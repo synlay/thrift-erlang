@@ -19,7 +19,7 @@
 
 -module(test_server).
 
--export([go/0, go/1, start_link/2, handle_function/2]).
+-export([go/0, go/1, start_link/2, handle_function/4]).
 
 -include("thriftTest_types.hrl").
 
@@ -52,40 +52,40 @@ go(Args) ->
 
 start_link(Port, ServerOpts) ->
     thrift_socket_server:start([{handler, ?MODULE},
-                                {service, thriftTest_thrift},
+                                {service, "ThriftTest", thriftTest_thrift},
                                 {port, Port}] ++
                                ServerOpts).
 
 
-handle_function(testVoid, {}) ->
+handle_function(_ServiceName, testVoid, {}, _AppCtx) ->
     io:format("testVoid~n"),
     ok;
 
-handle_function(testString, {S}) when is_binary(S) ->
+handle_function(_ServiceName, testString, {S}, _AppCtx) when is_binary(S) ->
     io:format("testString: ~p~n", [S]),
     {reply, S};
 
-handle_function(testByte, {I8}) when is_integer(I8) ->
+handle_function(_ServiceName, testByte, {I8}, _AppCtx) when is_integer(I8) ->
     io:format("testByte: ~p~n", [I8]),
     {reply, I8};
 
-handle_function(testI32, {I32}) when is_integer(I32) ->
+handle_function(_ServiceName, testI32, {I32}, _AppCtx) when is_integer(I32) ->
     io:format("testI32: ~p~n", [I32]),
     {reply, I32};
 
-handle_function(testI64, {I64}) when is_integer(I64) ->
+handle_function(_ServiceName, testI64, {I64}, _AppCtx) when is_integer(I64) ->
     io:format("testI64: ~p~n", [I64]),
     {reply, I64};
 
-handle_function(testDouble, {Double}) when is_float(Double) ->
+handle_function(_ServiceName, testDouble, {Double}, _AppCtx) when is_float(Double) ->
     io:format("testDouble: ~p~n", [Double]),
     {reply, Double};
 
-handle_function(testStruct,
+handle_function(_ServiceName, testStruct,
                 {Struct = #xtruct{string_thing = String,
                                  byte_thing = Byte,
                                  i32_thing = I32,
-                                 i64_thing = I64}})
+                                 i64_thing = I64}}, _AppCtx)
 when is_binary(String),
      is_integer(Byte),
      is_integer(I32),
@@ -93,34 +93,34 @@ when is_binary(String),
     io:format("testStruct: ~p~n", [Struct]),
     {reply, Struct};
 
-handle_function(testNest,
-                {Nest}) when is_record(Nest, xtruct2),
-                             is_record(Nest#xtruct2.struct_thing, xtruct) ->
+handle_function(_ServiceName, testNest,
+                {Nest}, _AppCtx) when is_record(Nest, xtruct2),
+                                      is_record(Nest#xtruct2.struct_thing, xtruct) ->
     io:format("testNest: ~p~n", [Nest]),
     {reply, Nest};
 
-handle_function(testMap, {Map}) ->
+handle_function(_ServiceName, testMap, {Map}, _AppCtx) ->
     io:format("testMap: ~p~n", [dict:to_list(Map)]),
     {reply, Map};
 
-handle_function(testSet, {Set}) ->
+handle_function(_ServiceName, testSet, {Set}, _AppCtx) ->
     true = sets:is_set(Set),
     io:format("testSet: ~p~n", [sets:to_list(Set)]),
     {reply, Set};
 
-handle_function(testList, {List}) when is_list(List) ->
+handle_function(_ServiceName, testList, {List}, _AppCtx) when is_list(List) ->
     io:format("testList: ~p~n", [List]),
     {reply, List};
 
-handle_function(testEnum, {Enum}) when is_integer(Enum) ->
+handle_function(_ServiceName, testEnum, {Enum}, _AppCtx) when is_integer(Enum) ->
     io:format("testEnum: ~p~n", [Enum]),
     {reply, Enum};
 
-handle_function(testTypedef, {UserID}) when is_integer(UserID) ->
+handle_function(_ServiceName, testTypedef, {UserID}, _AppCtx) when is_integer(UserID) ->
     io:format("testTypedef: ~p~n", [UserID]),
     {reply, UserID};
 
-handle_function(testMapMap, {Hello}) ->
+handle_function(_ServiceName, testMapMap, {Hello}, _AppCtx) ->
     io:format("testMapMap: ~p~n", [Hello]),
 
     PosList = [{I, I}   || I <- lists:seq(1, 5)],
@@ -130,7 +130,7 @@ handle_function(testMapMap, {Hello}) ->
                              {-4, dict:from_list(NegList)}]),
     {reply, MapMap};
 
-handle_function(testInsanity, {Insanity}) when is_record(Insanity, insanity) ->
+handle_function(_ServiceName, testInsanity, {Insanity}, _AppCtx) when is_record(Insanity, insanity) ->
     Hello = #xtruct{string_thing = <<"Hello2">>,
                     byte_thing = 2,
                     i32_thing = 2,
@@ -162,7 +162,7 @@ handle_function(testInsanity, {Insanity}) when is_record(Insanity, insanity) ->
 
     {reply, Insane};
 
-handle_function(testMulti, Args = {Arg0, Arg1, Arg2, _Arg3, Arg4, Arg5})
+handle_function(_ServiceName, testMulti, Args = {Arg0, Arg1, Arg2, _Arg3, Arg4, Arg5}, _AppCtx)
   when is_integer(Arg0),
        is_integer(Arg1),
        is_integer(Arg2),
@@ -175,7 +175,7 @@ handle_function(testMulti, Args = {Arg0, Arg1, Arg2, _Arg3, Arg4, Arg5})
                     i32_thing = Arg1,
                     i64_thing = Arg2}};
 
-handle_function(testException, {String}) when is_binary(String) ->
+handle_function(_ServiceName, testException, {String}, _AppCtx) when is_binary(String) ->
     io:format("testException(~p)~n", [String]),
     case String of
         <<"Xception">> ->
@@ -185,7 +185,7 @@ handle_function(testException, {String}) when is_binary(String) ->
             ok
     end;
 
-handle_function(testMultiException, {Arg0, Arg1}) ->
+handle_function(_ServiceName, testMultiException, {Arg0, Arg1}, _AppCtx) ->
     io:format("testMultiException(~p, ~p)~n", [Arg0, Arg1]),
     case Arg0 of
         <<"Xception">> ->
@@ -199,6 +199,6 @@ handle_function(testMultiException, {Arg0, Arg1}) ->
             {reply, #xtruct{string_thing = Arg1}}
     end;
 
-handle_function(testOneway, {Seconds}) ->
+handle_function(_ServiceName, testOneway, {Seconds}, _AppCtx) ->
     timer:sleep(1000 * Seconds),
     ok.

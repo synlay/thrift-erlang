@@ -24,17 +24,20 @@
 -include("thrift_constants.hrl").
 -include("thrift_protocol.hrl").
 
--record(thrift_processor, {handler, protocol, service}).
+-record(thrift_processor, {handler, protocol, service, service_name, app_ctx}).
 
-init({_Server, ProtoGen, Service, Handler}) when is_function(ProtoGen, 0) ->
+init({_Server, ProtoGen, Service, ServiceName, Handler, AppCtx}) when is_function(ProtoGen, 0) ->
     {ok, Proto} = ProtoGen(),
     loop(#thrift_processor{protocol = Proto,
                            service = Service,
-                           handler = Handler}).
+                           service_name = ServiceName,
+                           handler = Handler,
+                           app_ctx = AppCtx}).
 
 loop(State0 = #thrift_processor{protocol  = Proto0,
                                 handler = Handler,
-                                service = Service}) ->
+                                service = Service,
+                                app_ctx = AppCtx}) ->
 
     {Proto1, MessageBegin} = thrift_protocol:read(Proto0, message_begin),
     State1 = State0#thrift_processor{protocol = Proto1},
@@ -53,40 +56,44 @@ loop(State0 = #thrift_processor{protocol  = Proto0,
                 [ServiceName, FunctionName] ->
                     ServiceModule  = thrift_multiplexed_map_wrapper:fetch(ServiceName, Service),
                     ServiceHandler = thrift_multiplexed_map_wrapper:fetch(ServiceName, Handler),
-                    case handle_function(State1#thrift_processor{service=ServiceModule, handler=ServiceHandler}, list_to_atom(FunctionName), Seqid) of
+                    case handle_function(State1#thrift_processor{service=ServiceModule,
+                                                                 service_name=ServiceName,
+                                                                 handler=ServiceHandler}, list_to_atom(FunctionName), Seqid) of
                         {State2, ok} -> loop(State2#thrift_processor{service=Service, handler=Handler});
                         {_State2, {error, Reason}} ->
-							apply(ErrorHandler(Handler), handle_error, [list_to_atom(Function), Reason]),
+							apply(ErrorHandler(Handler), handle_error, [ServiceName, list_to_atom(Function), Reason, AppCtx]),
                             thrift_protocol:close_transport(Proto1),
                             ok
                     end;
                 _ ->
                     case handle_function(State1, list_to_atom(Function), Seqid) of
                         {State2, ok} -> loop(State2);
-                        {_State2, {error, Reason}} ->
-							apply(ErrorHandler(Handler), handle_error, [list_to_atom(Function), Reason]),
+                        {State2, {error, Reason}} ->
+							apply(ErrorHandler(Handler), handle_error, [State2#thrift_processor.service_name, list_to_atom(Function), Reason, AppCtx]),
                             thrift_protocol:close_transport(Proto1),
                             ok
                     end
             end;
         {error, timeout = Reason} ->
-			apply(ErrorHandler(Handler), handle_error, [undefined, Reason]),
+			apply(ErrorHandler(Handler), handle_error, [State1#thrift_processor.service_name, undefined, Reason, AppCtx]),
             thrift_protocol:close_transport(Proto1),
             ok;
         {error, closed = Reason} ->
             %% error_logger:info_msg("Client disconnected~n"),
-			apply(ErrorHandler(Handler), handle_error, [undefined, Reason]),
+			apply(ErrorHandler(Handler), handle_error, [State1#thrift_processor.service_name, undefined, Reason, AppCtx]),
             thrift_protocol:close_transport(Proto1),
             exit(shutdown);
         {error, Reason} ->
-			apply(ErrorHandler(Handler), handle_error, [undefined, Reason]),
+			apply(ErrorHandler(Handler), handle_error, [State1#thrift_processor.service_name, undefined, Reason, AppCtx]),
             thrift_protocol:close_transport(Proto1),
             exit(shutdown)
     end.
 
 handle_function(State0=#thrift_processor{protocol = Proto0,
                                          handler = Handler,
-                                         service = Service},
+                                         service = Service,
+                                         service_name = ServiceName,
+                                         app_ctx = AppCtx},
                 Function,
                 Seqid) ->
     InParams = Service:function_info(Function, params_type),
@@ -95,7 +102,7 @@ handle_function(State0=#thrift_processor{protocol = Proto0,
     State1 = State0#thrift_processor{protocol = Proto1},
 
     try
-        Result = Handler:handle_function(Function, Params),
+        Result = Handler:handle_function(ServiceName, Function, Params, AppCtx),
         %% {Micro, Result} = better_timer(Handler, handle_function, [Function, Params]),
         %% error_logger:info_msg("Processed ~p(~p) in ~.4fms~n",
         %%                       [Function, Params, Micro/1000.0]),
