@@ -47,6 +47,8 @@
          acceptor=null,
          socket_opts=[{recv_timeout, 500}],
          framed=false,
+         ssltransport=false,
+         ssloptions=[],
          app_ctx :: any()
         }).
 
@@ -148,10 +150,16 @@ parse_options([{max, Max} | Rest], State) ->
                      Max
              end,
     parse_options(Rest, State#thrift_socket_server{max=MaxInt});
+
 parse_options([{framed, Framed} | Rest], State) when is_boolean(Framed) ->
     parse_options(Rest, State#thrift_socket_server{framed=Framed});
 parse_options([{app_ctx, AppCtx} | Rest], State) ->
-    parse_options(Rest, State#thrift_socket_server{app_ctx=AppCtx}).
+    parse_options(Rest, State#thrift_socket_server{app_ctx=AppCtx});
+
+parse_options([{ssltransport, SSLTransport} | Rest], State) when is_boolean(SSLTransport) ->
+    parse_options(Rest, State#thrift_socket_server{ssltransport=SSLTransport});
+parse_options([{ssloptions, SSLOptions} | Rest], State) when is_list(SSLOptions) ->
+    parse_options(Rest, State#thrift_socket_server{ssloptions=SSLOptions}).
 
 start_server(State=#thrift_socket_server{name=Name}) ->
     case Name of
@@ -215,25 +223,29 @@ new_acceptor(State=#thrift_socket_server{max=0}) ->
     State#thrift_socket_server{acceptor=null};
 new_acceptor(State=#thrift_socket_server{listen=Listen,
                                          service=Service, service_name=ServiceName, handler=Handler,
-                                         socket_opts=Opts, framed=Framed, app_ctx = AppCtx
+                                         socket_opts=Opts, framed=Framed,
+                                         ssltransport=SslTransport, ssloptions=SslOptions,
+                                         app_ctx = AppCtx
                                         }) ->
     Pid = proc_lib:spawn_link(?MODULE, acceptor_loop,
-                              [{self(), Listen, Service, ServiceName, Handler, Opts, Framed, AppCtx}]),
+                              [{self(), Listen, Service, ServiceName, Handler, Opts, Framed, SslTransport, SslOptions, AppCtx}]),
     State#thrift_socket_server{acceptor=Pid}.
 
-acceptor_loop({Server, Listen, Service, ServiceName, Handler, SocketOpts, Framed, AppCtx})
+acceptor_loop({Server, Listen, Service, ServiceName, Handler, SocketOpts, Framed, SslTransport, SslOptions, AppCtx})
   when is_pid(Server), is_list(SocketOpts) ->
     case catch gen_tcp:accept(Listen) of % infinite timeout
         {ok, Socket} ->
             gen_server:cast(Server, {accepted, self()}),
             ProtoGen = fun() ->
-                               {ok, SocketTransport}   = thrift_socket_transport:new(Socket, SocketOpts),
-                               {ok, Transport}         =
-                                   case Framed of
-                                       true  -> thrift_framed_transport:new(SocketTransport);
-                                       false -> thrift_buffered_transport:new(SocketTransport)
-                                   end,
-                               {ok, Protocol}          = thrift_binary_protocol:new(Transport),
+                               {ok, SocketTransport} = case SslTransport of
+                                                           true  -> thrift_sslsocket_transport:new(Socket, SocketOpts, SslOptions);
+                                                           false -> thrift_socket_transport:new(Socket, SocketOpts)
+                                                       end,
+                               {ok, Transport}       = case Framed of
+                                                           true  -> thrift_framed_transport:new(SocketTransport);
+                                                           false -> thrift_buffered_transport:new(SocketTransport)
+                                                       end,
+                               {ok, Protocol}        = thrift_binary_protocol:new(Transport),
                                {ok, Protocol}
                        end,
             thrift_processor:init({Server, ProtoGen, Service, ServiceName, Handler, AppCtx});
