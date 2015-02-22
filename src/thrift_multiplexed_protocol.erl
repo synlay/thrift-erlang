@@ -55,29 +55,29 @@ new(ProtocolToDecorate, ServiceName) when is_record(ProtocolToDecorate, protocol
 
 flush_transport(State = #multiplexed_protocol{protocol_module_to_decorate = ProtocolModuleToDecorate,
                                                 protocol_data_to_decorate = State0}) ->
-    {State1, ok} = ProtocolModuleToDecorate:flush_transport(State0),
-    {State#multiplexed_protocol{protocol_data_to_decorate = State1}, ok}.
+    {State1, Result} = ProtocolModuleToDecorate:flush_transport(State0),
+    {State#multiplexed_protocol{protocol_data_to_decorate = State1}, Result}.
 
 close_transport(State = #multiplexed_protocol{protocol_module_to_decorate = ProtocolModuleToDecorate,
                                                 protocol_data_to_decorate = State0}) ->
-    {State1, ok} = ProtocolModuleToDecorate:close_transport(State0),
-    {State#multiplexed_protocol{protocol_data_to_decorate = State1}, ok}.
+    {State1, Result} = ProtocolModuleToDecorate:close_transport(State0),
+    {State#multiplexed_protocol{protocol_data_to_decorate = State1}, Result}.
 
 write(State = #multiplexed_protocol{protocol_module_to_decorate = ProtocolModuleToDecorate,
                                       protocol_data_to_decorate = State0,
                                                    service_name = ServiceName},
       Message = #protocol_message_begin{name = Name}) ->
-    {State1, ok} = ProtocolModuleToDecorate:write(State0,
+    {State1, Result} = ProtocolModuleToDecorate:write(State0,
                                                   Message#protocol_message_begin{name=ServiceName ++
                                                                                       ?MULTIPLEXED_SERVICE_SEPARATOR ++
                                                                                       Name}),
-    {State#multiplexed_protocol{protocol_data_to_decorate = State1}, ok};
+    {State#multiplexed_protocol{protocol_data_to_decorate = State1}, Result};
 
 write(State = #multiplexed_protocol{protocol_module_to_decorate = ProtocolModuleToDecorate,
                                       protocol_data_to_decorate = State0},
       Message) ->
-    {State1, ok} = ProtocolModuleToDecorate:write(State0, Message),
-    {State#multiplexed_protocol{protocol_data_to_decorate = State1}, ok}.
+    {State1, Result} = ProtocolModuleToDecorate:write(State0, Message),
+    {State#multiplexed_protocol{protocol_data_to_decorate = State1}, Result}.
 
 read(State = #multiplexed_protocol{protocol_module_to_decorate = ProtocolModuleToDecorate,
                                      protocol_data_to_decorate = State0},
